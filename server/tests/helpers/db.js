@@ -1,5 +1,5 @@
 process.env.NODE_ENV = 'test';
-require('dotenv').config();
+require('dotenv').config({ quiet: true });
 
 const { pool } = require('../../src/db');
 const { migrate } = require('../../src/db/migrate');

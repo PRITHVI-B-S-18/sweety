@@ -10,7 +10,8 @@
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
     "migrate": "node src/db/migrate.js",
-    "seed": "node scripts/seed.js"
+    "seed": "node scripts/seed.js",
+    "format": "prettier --write src tests scripts"
   },
   "keywords": [],
   "author": "",
@@ -27,6 +28,7 @@
   "devDependencies": {
     "jest": "^30.5.2",
     "nodemon": "^3.1.14",
+    "prettier": "^3.9.10",
     "supertest": "^7.3.1"
   },
   "jest": {

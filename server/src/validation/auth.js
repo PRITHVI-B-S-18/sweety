@@ -2,7 +2,7 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const NAME_MAX_LENGTH = 255;
 const EMAIL_MAX_LENGTH = 255;
 const PASSWORD_MIN_LENGTH = 8;
-const PASSWORD_MAX_BYTES = 72; 
+const PASSWORD_MAX_BYTES = 72;
 
 const isString = (value) => typeof value === 'string';
 const normalizeName = (name) => name.trim();

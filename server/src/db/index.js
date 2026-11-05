@@ -1,11 +1,15 @@
-require('dotenv').config();
+require('dotenv').config({ quiet: true });
 const { Pool } = require('pg');
 
 const connectionString =
-  process.env.NODE_ENV === 'test' ? process.env.TEST_DATABASE_URL : process.env.DATABASE_URL;
+  process.env.NODE_ENV === 'test'
+    ? process.env.TEST_DATABASE_URL
+    : process.env.DATABASE_URL;
 
 if (!connectionString) {
-  throw new Error('Database URL is not set. Copy .env.example to .env and fill it in.');
+  throw new Error(
+    'Database URL is not set. Copy .env.example to .env and fill it in.',
+  );
 }
 
 const pool = new Pool({ connectionString });

@@ -12,7 +12,10 @@ async function migrate({ quiet = false } = {}) {
     )
   `);
 
-  const files = fs.readdirSync(MIGRATIONS_DIR).filter((f) => f.endsWith('.sql')).sort();
+  const files = fs
+    .readdirSync(MIGRATIONS_DIR)
+    .filter((f) => f.endsWith('.sql'))
+    .sort();
   const { rows } = await pool.query('SELECT name FROM schema_migrations');
   const applied = new Set(rows.map((r) => r.name));
 
@@ -23,7 +26,9 @@ async function migrate({ quiet = false } = {}) {
     try {
       await client.query('BEGIN');
       await client.query(sql);
-      await client.query('INSERT INTO schema_migrations (name) VALUES ($1)', [file]);
+      await client.query('INSERT INTO schema_migrations (name) VALUES ($1)', [
+        file,
+      ]);
       await client.query('COMMIT');
       if (!quiet) console.log(`Applied ${file}`);
     } catch (err) {
