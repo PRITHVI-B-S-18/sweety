@@ -55,7 +55,7 @@ Run one test process at a time: all tests share the `sweety_test` database and e
 
 ## API
 
-All `/readings` routes need the header `Authorization: Bearer <token>`. Errors are returned as `{ "error": "message" }`.
+All `/readings` and `/reports` routes need the header `Authorization: Bearer <token>`. Errors are returned as `{ "error": "message" }`.
 
 | Method and path | Body or query | Success | Errors |
 | --- | --- | --- | --- |
@@ -65,11 +65,20 @@ All `/readings` routes need the header `Authorization: Bearer <token>`. Errors a
 | `POST /readings` | `{ date, slot, value }` | 201 reading | 400 validation, 409 slot already used that day |
 | `PUT /readings/:id` | `{ date, slot, value }` | 200 reading | 400 validation, 404 not found, 409 slot taken |
 | `DELETE /readings/:id` | none | 204 | 404 not found |
+| `GET /reports/daily` | optional `?date=YYYY-MM-DD` (defaults to today) | 200 summary plus that day's readings | 400 bad or future date |
+| `GET /reports/month-to-date` | optional `?date=YYYY-MM-DD` (defaults to today) | 200 summary, 1st of the month to `date` | 400 bad or future date |
+| `GET /reports/monthly` | optional `?date=YYYY-MM-DD` (defaults to today) | 200 summary of the previous full calendar month | 400 bad or future date |
 
 `slot` is one of `fasting` (Morning, fasting), `after_breakfast`, `after_lunch`, `after_dinner`. A reading looks like:
 
 ```json
 { "id": 7, "date": "2026-01-15", "slot": "after_lunch", "value": 120, "created_at": "2026-01-15T09:30:00.000Z" }
+```
+A report looks like this (`daily` also includes a `readings` array in the same shape as `GET /readings`). With no readings, `count` is 0 and the other three are `null`:
+
+```json
+{ "type": "monthly", "from": "2026-09-01", "to": "2026-09-30",
+  "count": 2, "highest": 160, "lowest": 130, "average": 145 }
 ```
 
 ## Notes
@@ -99,6 +108,7 @@ The test "caps a day at 4 readings" covers this.
 - Reading dates run from 2000-01-01 to today, where "today" is judged in `APP_TIMEZONE`.
 - Password rules: at least 8 characters with an uppercase letter, a lowercase letter and a number. The letter checks are ASCII-only.
 - Deleting a user deletes their readings (`ON DELETE CASCADE`).
+- "Monthly" means the previous full calendar month relative to the given date (for 15 October, all of September). Averages are rounded to one decimal place in SQL, and a half rounds up (116.25 becomes 116.3).
 
 ### What I'd improve with more time
 - Rate limiting on `POST /auth/login` (for example `express-rate-limit`).
