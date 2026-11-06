@@ -6,20 +6,13 @@ const {
   isRealDate,
   validateReading,
 } = require('../validation/readings');
+const { COLUMNS, SLOT_ORDER } = require('../services/readingSql');
 
 const router = express.Router();
 
 router.use(requireAuth);
 
 const MAX_ID = 2147483647;
-
-// to_char returns the DATE as plain text.
-const COLUMNS = `id, to_char(reading_date, 'YYYY-MM-DD') AS date, slot, value, created_at`;
-
-// Alphabetical order would put after_breakfast before fasting.
-const SLOT_ORDER = `CASE slot ${Object.keys(SLOT_LABELS)
-  .map((key, index) => `WHEN '${key}' THEN ${index}`)
-  .join(' ')} END`;
 
 const duplicateMessage = (slot) => {
   const label = SLOT_LABELS[slot];
