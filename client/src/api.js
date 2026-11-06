@@ -7,14 +7,21 @@ export function getToken() {
 }
 
 export function setToken(token) {
-  if (token) localStorage.setItem(TOKEN_KEY, token)
-  else localStorage.removeItem(TOKEN_KEY)
+  if (token) {
+    localStorage.setItem(TOKEN_KEY, token)
+  } else {
+    localStorage.removeItem(TOKEN_KEY)
+  }
 }
 
 export async function api(path, { method = 'GET', body } = {}) {
-  const headers = { 'Content-Type': 'application/json' }
+  const headers = {
+    'Content-Type': 'application/json',
+  }
   const token = getToken()
-  if (token) headers.Authorization = `Bearer ${token}`
+  if (token) {
+    headers.Authorization = `Bearer ${token}`
+  }
 
   const res = await fetch(`${BASE_URL}${path}`, {
     method,
@@ -24,6 +31,13 @@ export async function api(path, { method = 'GET', body } = {}) {
 
   const data = res.status === 204 ? null : await res.json().catch(() => null)
   if (!res.ok) {
+    // Handle expired/invalid JWT on protected endpoints.
+    // Do not log out for login or registration failures.
+    if (res.status === 401 && !path.startsWith('/auth/')) {
+      setToken(null)
+
+      window.dispatchEvent(new Event('sweety:unauthorized'))
+    }
     const error = new Error(data?.error || `Request failed (${res.status})`)
     error.status = res.status
     throw error
