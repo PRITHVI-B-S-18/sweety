@@ -77,7 +77,7 @@ function RegisterPage() {
             placeholder="Choose a password"
             required
           />
-          <p id="password-hint" className="muted">
+          <p id="password-hint" className="muted hint">
             At least 8 characters, with an uppercase letter, a lowercase letter
             and a number.
           </p>

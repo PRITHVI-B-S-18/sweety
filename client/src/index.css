@@ -83,6 +83,11 @@ button:disabled {
   cursor: not-allowed;
 }
 
+form > button,
+form .actions {
+  margin-top: 16px;
+}
+
 .card {
   background: #fff;
   border: 1px solid #e4e7eb;
@@ -96,6 +101,15 @@ button:disabled {
 }
 .muted {
   color: #616e7c;
+}
+
+.hint {
+  margin: 4px 0 0;
+  font-size: 0.875rem;
+}
+
+form .error {
+  margin-bottom: 0;
 }
 
 .actions {

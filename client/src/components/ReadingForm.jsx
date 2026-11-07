@@ -76,7 +76,7 @@ function ReadingForm({ reading, onSubmit, onCancel }) {
           onChange={(e) => setValue(e.target.value)}
           placeholder="e.g. 120"
         />
-        <p id="value-hint" className="muted">
+        <p id="value-hint" className="muted hint">
           Whole number from 40 to 600.
         </p>
       </div>

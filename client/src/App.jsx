@@ -1,5 +1,4 @@
 import { Routes, Route, Navigate, Link, useNavigate } from 'react-router-dom'
-
 import LoginPage from './pages/LoginPage.jsx'
 import RegisterPage from './pages/RegisterPage.jsx'
 import ReadingsPage from './pages/ReadingsPage.jsx'
@@ -19,23 +18,16 @@ export default function App() {
     <div className="app">
       <header className="app-header">
         <h1>Sweety</h1>
-        <nav>
-          {isAuthenticated ? (
-            <>
-              <Link to="/readings">Readings</Link>
-              <Link to="/reports">Reports</Link>
-
-              {user && <span>Hi, {user.name}</span>}
-
-              <button onClick={handleLogout}>Logout</button>
-            </>
-          ) : (
-            <>
-              <Link to="/login">Login</Link>
-              <Link to="/register">Register</Link>
-            </>
-          )}
-        </nav>
+        {isAuthenticated && (
+          <nav>
+            <Link to="/readings">Readings</Link>
+            <Link to="/reports">Reports</Link>
+            <span className="user-name">{user.name}</span>
+            <button type="button" onClick={handleLogout}>
+              Log out
+            </button>
+          </nav>
+        )}
       </header>
 
       <main>
@@ -47,8 +39,7 @@ export default function App() {
             path="/readings"
             element={
               <RequireAuth>
-                {' '}
-                <ReadingsPage />{' '}
+                <ReadingsPage />
               </RequireAuth>
             }
           />
@@ -56,8 +47,7 @@ export default function App() {
             path="/reports"
             element={
               <RequireAuth>
-                {' '}
-                <ReportsPage />{' '}
+                <ReportsPage />
               </RequireAuth>
             }
           />
