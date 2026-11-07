@@ -14,12 +14,16 @@ function LoginPage() {
 
   const redirectTo = location.state?.from?.pathname || '/readings'
 
+  // After every hook, so the hook order never changes between renders
   if (isAuthenticated) {
     return <Navigate to={redirectTo} replace />
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    // disabled={submitting} only applies after the next render, so a fast
+    // double submit needs this guard too
+    if (submitting) return
     setError('')
     setSubmitting(true)
 
@@ -35,7 +39,7 @@ function LoginPage() {
 
   return (
     <div className="card">
-      <h2>Login</h2>
+      <h2>Log in</h2>
 
       <form onSubmit={handleSubmit}>
         <div>
@@ -43,6 +47,7 @@ function LoginPage() {
           <input
             id="email"
             type="email"
+            autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter your email"
@@ -55,6 +60,7 @@ function LoginPage() {
           <input
             id="password"
             type="password"
+            autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter your password"
@@ -62,10 +68,14 @@ function LoginPage() {
           />
         </div>
 
-        {error && <p className="error">{error}</p>}
+        {error && (
+          <p className="error" role="alert">
+            {error}
+          </p>
+        )}
 
         <button type="submit" disabled={submitting}>
-          {submitting ? 'Logging in...' : 'Login'}
+          {submitting ? 'Logging in...' : 'Log in'}
         </button>
       </form>
 
