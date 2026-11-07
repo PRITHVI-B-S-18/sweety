@@ -22,7 +22,9 @@ export default function App() {
           <nav>
             <Link to="/readings">Readings</Link>
             <Link to="/reports">Reports</Link>
-            <span className="user-name">{user.name}</span>
+            <span className="user-name" title={user.name}>
+              Hi, {user.name}
+            </span>
             <button type="button" onClick={handleLogout}>
               Log out
             </button>

@@ -88,6 +88,12 @@ form .actions {
   margin-top: 16px;
 }
 
+.user-name {
+  max-width: 20ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .card {
   background: #fff;
   border: 1px solid #e4e7eb;
