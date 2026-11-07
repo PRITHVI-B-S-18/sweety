@@ -107,6 +107,14 @@ describe('POST /readings', () => {
     expect(res.body.error).toBe(message);
   });
 
+  it('asks for the value first when the whole form is empty', async () => {
+    const { token } = await signUp('a@example.com');
+    const res = await addReading(token, { date: '', slot: '', value: '' });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe('Please enter a glucose value.');
+  });
+
   it('returns 409 for a second reading in the same slot and date', async () => {
     const { token } = await signUp('a@example.com');
     await addReading(token, reading());

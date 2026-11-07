@@ -70,8 +70,9 @@ const validateReading = (
   const { date, slot, value } = body || {};
   const today = todayIn(timeZone, now);
 
+  // One error at a time, in the order of the brief's rules: value first
   const error =
-    validateDate(date, today) || validateSlot(slot) || validateValue(value);
+    validateValue(value) || validateDate(date, today) || validateSlot(slot);
   if (error) return { error };
 
   return { value: { date, slot, value: parseValue(value) } };

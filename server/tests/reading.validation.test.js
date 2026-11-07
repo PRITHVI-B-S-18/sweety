@@ -200,17 +200,37 @@ describe('validateReading', () => {
 
   it('does not crash when the body is missing', () => {
     expect(() => validateReading(undefined, opts)).not.toThrow();
-    expect(validateReading(undefined, opts).error).toBe('Please enter a date.');
+    expect(validateReading(undefined, opts).error).toBe(
+      'Please enter a glucose value.',
+    );
   });
 
-  it('judges "future" in the configured time zone', () => {
-    const lateUtc = new Date('2026-11-06T20:00:00Z'); // already 2026-11-07 in Kolkata
-    const body = { ...good, date: '2026-11-07' };
-    expect(validateReading(body, { now: lateUtc, timeZone: 'UTC' }).error).toBe(
-      'Date cannot be in the future.',
+  it('reports the value first on an empty form', () => {
+    expect(validateReading({}, opts).error).toBe(
+      'Please enter a glucose value.',
     );
+    expect(validateReading({ date: '', slot: '', value: '' }, opts).error).toBe(
+      'Please enter a glucose value.',
+    );
+  });
+
+  it('reports the value before the date and the slot', () => {
     expect(
-      validateReading(body, { now: lateUtc, timeZone: 'Asia/Kolkata' }).error,
-    ).toBeUndefined();
+      validateReading({ date: '2999-01-01', slot: 'night', value: 'abc' }, opts)
+        .error,
+    ).toBe('Value must be between 40 and 600 mg/dl.');
+  });
+
+  it('reports the date before the slot once the value is valid', () => {
+    expect(
+      validateReading({ date: '2999-01-01', slot: 'night', value: 120 }, opts)
+        .error,
+    ).toBe('Date cannot be in the future.');
+  });
+
+  it('reports the slot last', () => {
+    expect(
+      validateReading({ date: good.date, slot: '', value: 120 }, opts).error,
+    ).toBe('Please choose a valid time slot.');
   });
 });
