@@ -93,6 +93,8 @@ When a day is full, a repeated slot returns 409 with the more specific
 "You already have an After lunch reading for this date.", and an unknown slot returns 400.
 The test "caps a day at 4 readings" covers this.
 
+Validation reports one error at a time, in this order: value, then date, then time slot. An empty form therefore shows "Please enter a glucose value." first.
+
 **Other rules**
 - A reading's date is returned as a plain `YYYY-MM-DD` string (`to_char` in SQL), so it cannot shift to the previous day through a JavaScript `Date` and UTC.
 - Slots are stored as keys; the UI shows the friendly labels. Lists are ordered newest date first, then by time of day, not alphabetically.
@@ -109,6 +111,8 @@ The test "caps a day at 4 readings" covers this.
 - Password rules: at least 8 characters with an uppercase letter, a lowercase letter and a number. The letter checks are ASCII-only.
 - Deleting a user deletes their readings (`ON DELETE CASCADE`).
 - "Monthly" means the previous full calendar month relative to the given date (for 15 October, all of September). Averages are rounded to one decimal place in SQL, and a half rounds up (116.25 becomes 116.3).
+- The date in the add-reading form defaults to "today" in the browser's time zone, while the server decides what counts as a future date using `APP_TIMEZONE`. For users in one time zone (India, in this case) they agree. Anyone in a different zone could be told "Date cannot be in the future." for a few hours around midnight.
+- Decimal values (e.g. 40.6) are rejected with the brief's message "Value must be between 40 and 600 mg/dl.", because the rule is "a whole number between 40 and 600". The form shows a "Whole number from 40 to 600" hint so this is clear in advance.
 
 ### What I'd improve with more time
 - Rate limiting on `POST /auth/login` (for example `express-rate-limit`).
