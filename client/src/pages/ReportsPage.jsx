@@ -1,9 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { api } from '../api.js'
-import { todayString } from '../dates.js'
+import { formatMonthYear, todayString } from '../dates.js'
 import ReportCard from '../components/ReportCard.jsx'
+import ReadingsChart from '../components/ReadingsChart.jsx'
 
 const TYPES = ['daily', 'month-to-date', 'monthly']
+
+// '2026-11-05' -> '2026-11-01'
+const monthStartOf = (date) => `${date.slice(0, 7)}-01`
 
 function ReportsPage() {
   const [date, setDate] = useState(todayString())
@@ -12,17 +16,22 @@ function ReportsPage() {
 
   const latestRequest = useRef(0)
 
-  // Only the newest request may update the state,
-  // so a slow response for an earlier date can never overwrite the reports for the current one.
+  // Only the newest request may update the state, so a slow response for an
+  // earlier date can never overwrite the reports for the current one.
   useEffect(() => {
     // Increment first, so clearing the date also discards any request in flight
     const requestId = ++latestRequest.current
     if (!date) return
 
-    Promise.all(TYPES.map((type) => api(`/reports/${type}?date=${date}`)))
-      .then(([daily, monthToDate, monthly]) => {
+    // The month's readings load with the three reports, so everything appears
+    // together and the latestRequest guard covers all four requests.
+    Promise.all([
+      ...TYPES.map((type) => api(`/reports/${type}?date=${date}`)),
+      api(`/readings?from=${monthStartOf(date)}&to=${date}`),
+    ])
+      .then(([daily, monthToDate, monthly, monthReadings]) => {
         if (requestId !== latestRequest.current) return
-        setReports({ daily, monthToDate, monthly })
+        setReports({ daily, monthToDate, monthly, monthReadings })
         setError('')
       })
       .catch((err) => {
@@ -45,23 +54,35 @@ function ReportsPage() {
     content = <p className="muted">Loading…</p>
   } else if (reports) {
     content = (
-      <div className="report-grid">
-        <ReportCard
-          title="Daily"
-          report={reports.daily}
-          emptyText="No readings on this day."
-        />
-        <ReportCard
-          title="Month to date"
-          report={reports.monthToDate}
-          emptyText="No readings so far this month."
-        />
-        <ReportCard
-          title="Last month"
-          report={reports.monthly}
-          emptyText="No readings last month."
-        />
-      </div>
+      <>
+        <div className="report-grid">
+          <ReportCard
+            title="Daily"
+            report={reports.daily}
+            emptyText="No readings on this day."
+          />
+          <ReportCard
+            title="Month to date"
+            report={reports.monthToDate}
+            emptyText="No readings so far this month."
+          />
+          <ReportCard
+            title="Last month"
+            report={reports.monthly}
+            emptyText="No readings last month."
+          />
+        </div>
+
+        <div className="card">
+          <h3>This month</h3>
+          <p className="muted">{formatMonthYear(date)}</p>
+          <ReadingsChart
+            readings={reports.monthReadings}
+            from={monthStartOf(date)}
+            to={date}
+          />
+        </div>
+      </>
     )
   }
 
