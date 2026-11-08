@@ -11,6 +11,7 @@ A small web app where a diabetes patient records up to 4 blood glucose readings 
 - **Reports.** Daily, month-to-date and previous-month reports show the highest, lowest and average reading (rounded to 1 decimal) and the number of readings. The daily report also lists each reading with its slot, and every report has a friendly empty state.
 - **Seed script** that creates a demo user with two months of readings.
 - **221 automated tests** covering validation, the API, ownership checks and report date ranges.
+- **Bonus:** a monthly line chart on the reports page (Recharts), with one line per time slot for the month of the selected date.
 - **Bonus:** `docker-compose.yml` starts PostgreSQL (and creates the test database) with one command.
 
 ## Screenshots
@@ -19,11 +20,12 @@ A small web app where a diabetes patient records up to 4 blood glucose readings 
 | --- | --- |
 | ![Readings list and add form](docs/screenshots/readings.png) | ![Daily, month-to-date and last-month reports](docs/screenshots/reports.png) |
 | ![Duplicate slot validation message](docs/screenshots/validation.png) | ![Reports empty states](docs/screenshots/reports-empty.png) |
-| ![Log in](docs/screenshots/login.png) | ![Register](docs/screenshots/register.png) |
+| ![Monthly chart](docs/screenshots/chart.png) | ![Log in](docs/screenshots/login.png) |
+| ![Register](docs/screenshots/register.png) | |
 
 ## Prerequisites
 
-- Node.js 20+
+- Node.js 20.19+ or 22.12+
 - Docker Desktop (runs PostgreSQL), or a local PostgreSQL 14+
 
 ## Setup
@@ -124,7 +126,8 @@ sweety/
         ├── api.js              fetch wrapper (token, errors, 401 handling)
         ├── auth.jsx            Auth context and protected-route guard
         ├── pages/              Login, Register, Readings, Reports
-        ├── components/         ReadingForm, ReadingsTable, ReportCard
+        ├── components/         ReadingForm, ReadingsTable, ReportCard, ReadingsChart
+        ├── chartData.js        Builds one chart row per day for the monthly chart
         ├── slots.js            Slot keys and labels (match the server)
         └── dates.js            Local-date helpers
 ```
@@ -193,7 +196,7 @@ Validation reports one error at a time, in this order: value, then date, then ti
 - Deleting a user deletes their readings (`ON DELETE CASCADE`).
 
 ### What I'd improve with more time
-- Pagination on `GET /readings` and a monthly line chart on the reports page (both optional bonus tasks).
+- Pagination on `GET /readings` (optional bonus task), for users with many months of readings.
 - Frontend tests with React Testing Library for the reading form.
 - Rate limiting on `POST /auth/login` (for example `express-rate-limit`).
 - Check `JWT_SECRET` strength at startup, and add token refresh or revocation.
