@@ -16,12 +16,12 @@ A small web app where a diabetes patient records up to 4 blood glucose readings 
 
 ## Screenshots
 
-| Readings | Reports |
+| | |
 | --- | --- |
-| ![Readings list and add form](docs/screenshots/readings.png) | ![Daily, month-to-date and last-month reports](docs/screenshots/reports.png) |
-| ![Duplicate slot validation message](docs/screenshots/validation.png) | ![Reports empty states](docs/screenshots/reports-empty.png) |
-| ![Monthly chart](docs/screenshots/chart.png) | ![Log in](docs/screenshots/login.png) |
-| ![Register](docs/screenshots/register.png) | |
+| **Readings**<br>![Readings list and add form](docs/screenshots/readings.png) | **Reports**<br>![Daily, month-to-date and last-month reports](docs/screenshots/reports.png) |
+| **Validation message**<br>![Duplicate slot validation message](docs/screenshots/validation.png) | **Empty states**<br>![Reports empty states](docs/screenshots/reports-empty.png) |
+| **Monthly chart**<br>![Monthly chart](docs/screenshots/chart.png) | **Log in**<br>![Log in](docs/screenshots/login.png) |
+| **Register**<br>![Register](docs/screenshots/register.png) | |
 
 ## Prerequisites
 
